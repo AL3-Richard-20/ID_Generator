@@ -4,7 +4,7 @@
 
     <head>
 
-        <base href="../../">
+        <base href="">
 
         <meta charset="utf-8">
 
@@ -18,36 +18,76 @@
         <link rel="shortcut icon" href="./images/favicon.png">
         
         <!-- Page Title  -->
-        <title>ID Generators</title>
+        <title>Altres Printing Services | ID Generator</title>
 
         <link rel="stylesheet" href="./plugins/croppie/croppie.css">
 
+        <link rel="stylesheet" href="./plugins/uikit-3.17.11/css/uikit.min.css">
+
+
+
         <style>
 
-            /* .container {
-                display: inline-flex;
+            .collage-container {
+                display: flex;
                 flex-wrap: wrap;
-                justify-content:space-between;
-                width:100%;
-                border: 2px solid gray;
-            } */
-
-            /* .container {
-                line-height: 0;
-                
-                -webkit-column-count: 3;
-                -webkit-column-gap:   0px;
-                -moz-column-count:    3;
-                -moz-column-gap:      0px;
-                column-count:         3;
-                column-gap:           0px;
+                justify-content: start;
+                flex-direction: row;
+                max-width: 387px; /* Set your desired maximum width */
+                max-height: 493px;
+                margin: 0 auto; /* Center the container */
             }
 
-            .container img {
+            .collage-item {
+                flex: 0 0 auto; /* Prevent items from growing and shrinking */
+                /* margin: 5px; */
+            }
 
-                width: 100% !important;
-                height: auto !important;
-            } */
+            .collage-item img {
+                max-width: 100%;
+                max-height: 100%;
+                height: auto; /* Maintain aspect ratio */
+                display: block; /* Remove extra spacing under images */
+            }
+
+            /* ==================== Image Uploader ===================== */
+                #image_uploader{
+
+                    height:100vh;
+                    display:flex;
+                    align-items: center;
+                    justify-content: center;
+                    flex-direction: column;
+                }
+            /* ==================== Image Uploader END ================= */
+
+            /* ==================== Packages =========================== */
+                #package_list{
+
+                    height:100vh;
+                    display:flex;
+                    align-items: center;
+                    justify-content: center;
+                    flex-direction: column;
+                }
+
+                #package_list > button{
+
+                    margin-top: 5px;
+                    margin-bottom: 5px;
+                }
+            /* ==================== Packages END ======================= */
+
+            /* ==================== Preview Pane ======================== */
+                #preview_pane_div{
+
+                    height:100vh;
+                    display:flex;
+                    align-items: center;
+                    justify-content: center;
+                    flex-direction: column;
+                }
+            /* ==================== Preview Pane END ==================== */
 
         </style>
         
@@ -57,42 +97,125 @@
 
         <input type="hidden" id="selected_img">
 
-        <button type="button" onclick="selectPackage(1)">1</button>
-        <button type="button" onclick="selectPackage(2)">2</button>
-        <button type="button" onclick="selectPackage(3)">3</button>
-        <button type="button" onclick="selectPackage(4)">4</button>
-        <button type="button" onclick="selectPackage(5)">5</button>
-        <button type="button" onclick="selectPackage(6)">6</button>
+        <!-- ====================== Packages ====================== -->
+            <div id="package_list" style="display:none;">
+                <div style="text-align:center;">
+                    <h4><b class="uk-text-uppercase">Select Package:</b></h4><br>
+                </div>
+                <button class="uk-button-secondary uk-button-large" type="button" onclick="selectPackage(1)">Package 1</button>
+                <button class="uk-button-secondary uk-button-large" type="button" onclick="selectPackage(2)">Package 2</button>
+                <button class="uk-button-secondary uk-button-large" type="button" onclick="selectPackage(3)">Package 3</button>
+                <button class="uk-button-secondary uk-button-large" type="button" onclick="selectPackage(4)">Package 4</button>
+                <button class="uk-button-secondary uk-button-large" type="button" onclick="selectPackage(5)">Package 5</button>
+                <button class="uk-button-secondary uk-button-large" type="button" onclick="selectPackage(6)">Package 6</button>
+                <hr><br>
+                <div>
+                    <button 
+                        type="button" 
+                        class="uk-button-default uk-button-large" 
+                        onclick="step1()">
+                        <span uk-icon="icon: chevron-left"></span>
+                        Prev
+                    </button>
+                </div>
+            </div>
+        <!-- ====================== Packages END ================== -->
 
-        <div class="form-group">
-            <p><b>Image</b></p>
-            <input type="file" id="upload"> 
-            <div id="img_slots">
+
+        <!-- ======================= Image Selector ========================= -->
+            <div id="image_uploader">
+                <div style="text-align:center;">
+                    <h4><b class="uk-text-uppercase">Select an Image:</b></h4><br>
+                    <input type="file" id="upload"> 
+                </div><hr><br>
+                <button 
+                    type="button" 
+                    class="uk-button-primary uk-button-large" 
+                    onclick="step2()">
+                    Next
+                    <span uk-icon="icon: chevron-right"></span>
+                </button>
+            </div>
+        <!-- ======================= Image Selector END ===================== -->
+
+
+        <!-- ======================= Image Slots ======================== -->
+            <div id="img_slots" style="display: none;">
                 <!-- <img class="my-image" src="demo/demo-1.jpg" id="item_img" />   -->
             </div>
-        </div>
 
-        <div id="preview_pane_div" style="display:none;">
-            <h1>Result</h1>
-            <div class="grid" id="image_results">
-                <!-- <img id="img_preview_pane" src="" alt=""> -->
+            <div style="text-align: center;">
+                <button 
+                    type="button" 
+                    class="uk-button-primary uk-button-large" 
+                    id="next_result" 
+                    onclick="nextBtn()" 
+                    style="display:none;">
+                    Next
+                </button>
             </div>
-        </div>
+        <!-- ======================= Image Slots END ==================== -->
 
-        <button type="button" onclick="nextBtn()">Next</button>
 
+        <!-- ======================= Result Pane ============================-->
+            <div id="preview_pane_div" style="display:none;">
+                <div style="text-align:center;">
+                    <h4><b class="uk-text-uppercase">Result:</b></h4><br>
+                </div>
+                <div class="collage-container" id="image_results" style="min-height: 480px; max-height: 480px; min-width: 336px; max-width: 336px;">
+                </div>
+                <hr><br>
+                <div>
+                    <button 
+                        type="button" 
+                        class="uk-button-danger uk-button-large" 
+                        onclick="location.reload()">
+                        <span uk-icon="icon: history"></span>
+                        Startover
+                    </button>
+                    <button 
+                        type="button" 
+                        class="uk-button-default uk-button-large" 
+                        onclick="DownloadAsImage()">
+                        <span uk-icon="icon: download"></span>
+                        Download
+                    </button>
+                </div>
+            </div>
+        <!-- ======================= Result Pane END ========================-->
+
+        
         <script src="./plugins/jquery.min.js"></script>
+
+        <script src="./plugins/uikit-3.17.11/js/uikit.min.js"></script>
+        <script src="./plugins/uikit-3.17.11/js/uikit-icons.min.js"></script>
 
         <script src="./plugins/croppie/croppie.js"></script>
         <script src="./plugins/croppie/croppie.min.js"></script>
 
-        <script src="./plugins/masonry.pkgd.min.js"></script>
-        <script src="./plugins/masonry.js"></script>
+        <!-- <script src="./plugins/masonry.pkgd.min.js"></script>
+        <script src="./plugins/masonry.js"></script> -->
         <!-- <script src="https://cdn.jsdelivr.net/npm/masonry-layout/masonry.min.js"></script> -->
+
+        <!-- <script src="https://unpkg.com/packery@2/dist/packery.pkgd.min.js"></script> -->
+        <script src="./plugins//packery.pkgd.min.js"></script>
+        <script src="./plugins/html2canvas.min.js"></script>
 
         <script>
 
+            function packery(){
+
+                $('.collage-container').packery({
+                    // options
+                    itemSelector: '.collage-item',
+                });
+            }
+
             function selectPackage(pkg_no){
+
+                $('#package_list').hide()
+                $('#img_slots').show()
+                $('#next_result').show()
 
                 $('#img_slots').html('')
 
@@ -112,9 +235,9 @@
                 else if(package_val == 2){
 
                     twoByTwo(1)
+                    oneByFive(2)
                     passportSize(1)
                     oneByOne(3)
-                    oneByFive(2)
 
                     // 2x2          = 1
                     // Passport     = 1
@@ -123,7 +246,7 @@
                 }
 
                 else if(package_val == 3){
-
+                    
                     twoByTwo(2)
                     passportSize(2)
                     oneByOne(3)
@@ -168,7 +291,7 @@
 
                     var selected_img = $('#selected_img').val()
 
-                    output+='<h1 style="text-align:center;">1x1</h1>'
+                    output+='<h4 style="text-align:center;"><b class="uk-text-uppercase">1x1</b></h4>'
                     output+='<img class="my-image" src="'+ selected_img +'" id="img_1x1" iteration="'+ image_count +'" />'
 
                     $(output).appendTo('#img_slots')
@@ -184,7 +307,7 @@
 
                     var selected_img = $('#selected_img').val()
 
-                    output+='<h1 style="text-align:center;">1x5</h1>'
+                    output+='<h4 style="text-align:center;"><b class="uk-text-uppercase">1x5</b></h4>'
                     output+='<img class="my-image" src="'+ selected_img +'" id="img_1x5" iteration="'+ image_count +'" />'
 
                     $(output).appendTo('#img_slots')
@@ -200,7 +323,7 @@
 
                     var selected_img = $('#selected_img').val()
 
-                    output+='<h1 style="text-align:center;">2x2</h1>'
+                    output+='<h4 style="text-align:center;"><b class="uk-text-uppercase">2x2</b></h4>'
                     output+='<img class="my-image" src="'+ selected_img +'" id="img_2x2" iteration="'+ image_count +'" />'
 
                     $(output).appendTo('#img_slots')
@@ -216,7 +339,7 @@
 
                     var selected_img = $('#selected_img').val()
 
-                    output+='<h1 style="text-align:center;">Passport Size</h1>'
+                    output+='<h4 style="text-align:center;"><b class="uk-text-uppercase">Passport Size</b></h4>'
                     output+='<img class="my-image" src="'+ selected_img +'" id="img_passport" iteration="'+ image_count +'" />'
 
                     $(output).appendTo('#img_slots')
@@ -291,16 +414,18 @@
 
                         for(var i = 0; i < iteration; i++){
 
-                            output+='<img class="item" id="preview_'+ croppie_Id +'" src="'+ resp +'" style="border: 1px solid gray;">'
+                            output+='<div class="collage-item"><img class="photo-collage" id="preview_'+ croppie_Id +'" src="'+ resp +'" style="border: 1px solid gray;"></div>'
                             
                         }
                         
-                        // console.log('#preview_'+ croppie_Id + ' | '+ resp)
+                        console.log('#preview_'+ croppie_Id + ' | '+ resp)
 
                     })
                     
                 })
 
+                $('#img_slots').hide()
+                $('#next_result').hide()
                 $('#preview_pane_div').show()
 
                 setTimeout(function(){
@@ -309,17 +434,62 @@
 
                 }, 200)
 
-                // setTimeout(function(){
+                setTimeout(function(){
 
-                //     $('.grid').masonry({
-                //         itemSelector: '.item',
-                //         fitWidth:true,
+                    packery()
 
-                //     })
-
-                // }, 2000)
+                }, 2000)
                 
             }
+
+
+            // ============================= Steps ================================
+                function step1(){
+                    
+                    $('#package_list').hide()
+                    $('#image_uploader').show()
+                }
+
+                function step2(){
+
+                    if($('#upload')[0].files.length == 0){
+
+                        UIkit.notification({message: 'Please select an image', status: 'danger', pos: 'bottom-center'})
+                    }
+
+                    else{
+
+                        $('#image_uploader').hide()
+                        $('#package_list').show()
+                    }
+                    
+                }
+            // ============================= Steps END ============================
+
+            // ============================= Image Downloader ==========================
+                function downloadURI(uri, name) {
+
+                    var link = document.createElement("a");
+
+                    link.download = name;
+                    link.href = uri;
+                    document.body.appendChild(link);
+                    link.click();
+                    clearDynamicLink(link); 
+                }
+
+                function DownloadAsImage() {
+
+                    var current_date = new Date($.now());
+
+                    var element = $("#image_results")[0];
+                    
+                    html2canvas(element).then(function (canvas) {
+                        var myImage = canvas.toDataURL();
+                        downloadURI(myImage, current_date+".png");
+                    });
+                }
+            // ============================= Image Downloader END ======================
 
         </script>
 
